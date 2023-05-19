@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Article;
 use App\Models\Business;
 use Illuminate\Database\Seeder;
@@ -15,6 +16,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        User::create([
+            "username" => "user1",
+            "email" => "user1@gmail.com",
+            "password" => bcrypt('password'),
+        ]);
+
         // article
         Article::create([
             "title" => "Artikel 1",

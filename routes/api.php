@@ -1,13 +1,14 @@
- <?php
+<?php
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\BusinessController;
-use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\Guest\HomeController;
-use App\Http\Controllers\UserArticleController;
-use App\Http\Controllers\UserBusinessController;
+use App\Http\Controllers\Guest\ArticleController;
+use App\Http\Controllers\Guest\BusinessController;
+use App\Http\Controllers\User\LoginController;
+use App\Http\Controllers\User\UserArticleController;
+use App\Http\Controllers\User\UserBusinessController;
+use App\Http\Controllers\User\UserComplaintController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,20 +42,28 @@ Route::controller(BusinessController::class)->group(function () {
 });
 
 // User
-Route::prefix('user')->group(function () {
-    Route::controller(UserArticleController::class)->group(function () {
-        Route::get('article', 'index');
-        Route::post('article', 'store');
-        Route::get('article/{article:slug}', 'show');
-        Route::patch('article/{article:slug}', 'update');
-        Route::delete('article/{article:slug}', 'destroy');
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::prefix('user')->group(function () {
+        Route::controller(UserArticleController::class)->group(function () {
+            Route::get('article', 'index');
+            Route::post('article', 'store');
+            Route::get('article/{article:slug}', 'show');
+            Route::patch('article/{article:slug}', 'update');
+            Route::delete('article/{article:slug}', 'destroy'); 
+        });
+        Route::controller(UserBusinessController::class)->group(function () {
+            Route::post('business', 'store');
+            Route::get('business', 'index');
+            Route::get('business/{business}', 'show');
+            Route::patch('business/{business}', 'update');
+            Route::delete('business/{business}', 'destroy');
+        });
+        Route::get('complaint', [UserComplaintController::class, 'index']);
     });
-    Route::controller(UserBusinessController::class)->group(function () {
-        Route::post('business', 'store');
-        Route::get('business', 'index');
-        Route::get('business/{business}', 'show');
-        Route::patch('business/{business}', 'update');
-        Route::delete('business/{business}', 'destroy');
-    });
-    Route::get('complaint', [ComplaintController::class, 'index']);
+});
+
+// Login
+Route::controller(LoginController::class)->group(function () {
+    Route::post('login', 'login');
+    Route::get('logout', 'logout')->middleware(['auth:sanctum']);
 });

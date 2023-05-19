@@ -2,12 +2,23 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Throwable;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
+    public function unauthenticated($request, AuthenticationException $exception)
+    {
+        return response()->json([
+            "code" => 401,
+            "status" => "Unauthorized",
+            "message" => "Unauthenticated",
+            "errors" => "Unauthenticated",
+        ], 401);
+    }
+
     public function invalidJson($request, ValidationException $exception){
         return response()->json([
             "code" => $exception->status,

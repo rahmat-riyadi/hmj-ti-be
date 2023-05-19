@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
 use App\Models\Article;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\API\ResponseController;
 
@@ -25,7 +26,8 @@ class UserArticleController extends Controller
             "publish" => "required|date_format:Y-m-d H:i:s",
         ]);
         $validated["slug"] = Str::slug($validated["title"]);
-        $validated["image"] = basename($request->file("image")->storeAs("article", $validated["slug"] . ".jpg"));
+        $extension = $request->file('image')->getClientOriginalExtension();
+        $validated["image"] = basename($request->file("image")->storeAs("article", $validated["slug"] . ".$extension"));
         
         Article::create($validated);
         return ResponseController::create("", "Created", "successfully saved data", 201);

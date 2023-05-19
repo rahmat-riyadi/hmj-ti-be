@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
 use App\Models\Complaint;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\API\ResponseController;
 
-class ComplaintController extends Controller
+class UserComplaintController extends Controller
 {
     public function index () {
         $data = Complaint::latest()->get();
