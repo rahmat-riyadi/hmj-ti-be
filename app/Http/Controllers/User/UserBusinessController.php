@@ -42,7 +42,7 @@ class UserBusinessController extends Controller
             "image" => "image",
         ]);
         if($request->file("image")){
-            Storage::delete("business/$request->oldImage");
+            Storage::delete("business/$business->image");
             $validated["image"] = basename($request->file('image')->store('business'));
         }
         $business->update($validated);

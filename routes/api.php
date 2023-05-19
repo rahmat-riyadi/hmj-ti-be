@@ -2,10 +2,11 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\User\LoginController;
 use App\Http\Controllers\Guest\HomeController;
 use App\Http\Controllers\Guest\ArticleController;
 use App\Http\Controllers\Guest\BusinessController;
-use App\Http\Controllers\User\LoginController;
+use App\Http\Controllers\User\UserMemberController;
 use App\Http\Controllers\User\UserArticleController;
 use App\Http\Controllers\User\UserBusinessController;
 use App\Http\Controllers\User\UserComplaintController;
@@ -59,6 +60,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::delete('business/{business}', 'destroy');
         });
         Route::get('complaint', [UserComplaintController::class, 'index']);
+        Route::controller(UserMemberController::class)->group(function () {
+            Route::get('member', 'index');
+            Route::post('member', 'store');
+            Route::get('member/{member}', 'show');
+            Route::patch('member/{member}', 'update');
+            Route::delete('member/{member}', 'destroy'); 
+        });
     });
 });
 

@@ -49,7 +49,7 @@ class UserArticleController extends Controller
         $validated["slug"] = Str::slug($validated["title"]);
 
         if($request->file("image")){
-            Storage::delete("article/$request->oldImage");
+            Storage::delete("article/$article->photo");
             $validated["image"] = basename($request->file("image")->storeAs("article", $validated["slug"] . ".jpg"));
         }
         $article->update($validated);
