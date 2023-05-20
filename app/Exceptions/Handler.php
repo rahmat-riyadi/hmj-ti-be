@@ -6,6 +6,8 @@ use Illuminate\Auth\AuthenticationException;
 use Throwable;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Spatie\FlareClient\Http\Exceptions\NotFound;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -63,6 +65,15 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+        $this->renderable(function (NotFoundHttpException $e, $request)
+        {
+            return response()->json([
+                "code" => "404",
+                "status" => "Not Found",
+                "message" => "Not Found",
+                "errors" => "Not Found",
+            ]);
         });
     }
 }

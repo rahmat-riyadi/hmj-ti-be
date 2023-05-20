@@ -24,7 +24,7 @@ class UserBusinessController extends Controller
             "image" => "required|image",
         ]);
 
-        $validated["image"] = basename($request->file('image')->store('business'));
+        $validated["image"] = $request->file('image')->store('business');
         Business::create($validated);
         return ResponseController::create("", "Created", "successfully saved data", 201);
     }
@@ -39,18 +39,18 @@ class UserBusinessController extends Controller
             "description" => "required",
             "price" => "required|numeric|min:0",
             "isActive" => "required|boolean",
-            "image" => "image",
+            "image" => "nullable|image",
         ]);
         if($request->file("image")){
-            Storage::delete("business/$business->image");
-            $validated["image"] = basename($request->file('image')->store('business'));
+            Storage::delete($business->image);
+            $validated["image"] = $request->file('image')->store('business');
         }
         $business->update($validated);
         return ResponseController::create("", "Success", "Data successfully updated", 200);
     }
     
     public function destroy (Business $business) {
-        Storage::delete("business/$business->image");
+        Storage::delete($business->image);
         $business->delete();
         return ResponseController::create("", "Success", "Data successfully deleted", 200);
     }

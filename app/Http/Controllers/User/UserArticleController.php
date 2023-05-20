@@ -27,7 +27,7 @@ class UserArticleController extends Controller
         ]);
         $validated["slug"] = Str::slug($validated["title"]);
         $extension = $request->file('image')->getClientOriginalExtension();
-        $validated["image"] = basename($request->file("image")->storeAs("article", $validated["slug"] . ".$extension"));
+        $validated["image"] = $request->file("image")->storeAs("article", $validated["slug"] . ".$extension");
         
         Article::create($validated);
         return ResponseController::create("", "Created", "successfully saved data", 201);
@@ -49,15 +49,24 @@ class UserArticleController extends Controller
         $validated["slug"] = Str::slug($validated["title"]);
 
         if($request->file("image")){
-            Storage::delete("article/$article->photo");
-            $validated["image"] = basename($request->file("image")->storeAs("article", $validated["slug"] . ".jpg"));
+            Storage::delete($article->image);
+            $extension = $request->file('image')->getClientOriginalExtension();
+            $validated["image"] = $request->file("image")->storeAs("article", $validated["slug"] . ".$extension");
+        }
+        else if ($request->title != $article->title) {
+            // jika mnegganti title ganti nama file photo
+            $extension = pathinfo(Storage::url($article->image), PATHINFO_EXTENSION);
+            $fileName = $validated["slug"].".$extension";
+            $filePath = "article/$fileName";
+            Storage::move($article->image, $filePath);
+            $validated["image"] = $filePath;
         }
         $article->update($validated);
         return ResponseController::create("", "Success", "Data successfully updated", 200);
     }
 
     public function destroy (Article $article) {
-        Storage::delete("article/$article->image");
+        Storage::delete($article->image);
         $article->delete();
         return ResponseController::create("", "Success", "Data successfully deleted", 200);
     }

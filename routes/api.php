@@ -45,28 +45,10 @@ Route::controller(BusinessController::class)->group(function () {
 // User
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('user')->group(function () {
-        Route::controller(UserArticleController::class)->group(function () {
-            Route::get('article', 'index');
-            Route::post('article', 'store');
-            Route::get('article/{article:slug}', 'show');
-            Route::patch('article/{article:slug}', 'update');
-            Route::delete('article/{article:slug}', 'destroy'); 
-        });
-        Route::controller(UserBusinessController::class)->group(function () {
-            Route::post('business', 'store');
-            Route::get('business', 'index');
-            Route::get('business/{business}', 'show');
-            Route::patch('business/{business}', 'update');
-            Route::delete('business/{business}', 'destroy');
-        });
+        Route::resource('article', UserArticleController::class)->except(["create","edit"])->parameters(["article" => "article:slug"]);
+        Route::resource('business', UserBusinessController::class)->except(["create","edit"]);
+        Route::resource('member', UserMemberController::class)->except(["create","edit"]);
         Route::get('complaint', [UserComplaintController::class, 'index']);
-        Route::controller(UserMemberController::class)->group(function () {
-            Route::get('member', 'index');
-            Route::post('member', 'store');
-            Route::get('member/{member}', 'show');
-            Route::patch('member/{member}', 'update');
-            Route::delete('member/{member}', 'destroy'); 
-        });
     });
 });
 
