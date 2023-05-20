@@ -21,7 +21,7 @@ class ArticleDetailResource extends JsonResource
             "slug" => $this->slug,
             "title" => $this->title,
             "description" => $this->description,
-            "image" => "article/$this->image",
+            "image" => $this->image,
             "publish" => Date::parse($this->publish)->format('j-F-Y'),
         ];
     }

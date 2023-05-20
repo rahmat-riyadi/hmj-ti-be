@@ -19,7 +19,7 @@ class BusinessResource extends JsonResource
             "title" => $this->title,
             "description" => $this->description,
             "price" => $this->price,
-            "image" => "business/$this->image",
+            "image" => $this->image,
         ];
     }
 }
