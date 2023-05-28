@@ -12,6 +12,10 @@ class UserBusinessController extends Controller
 {
     public function index () {
         $data = Business::latest()->get();
+        $modifiedData = $data->map(function ($business) {
+            $business->image = url("storage/$business->image");
+            return $business;
+        });
         return ResponseController::create($data, 'success', 'Data retrieved successfully', 200);
     }
 
@@ -30,6 +34,7 @@ class UserBusinessController extends Controller
     }
 
     public function show (Business $business) {
+        $business->image = url("storage/$business->image");
         return ResponseController::create($business, "success", "Data retrieved successfully", 200);
     }
 

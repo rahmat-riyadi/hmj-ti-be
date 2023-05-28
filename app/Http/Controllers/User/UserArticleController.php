@@ -13,6 +13,10 @@ class UserArticleController extends Controller
 {
     public function index () {
         $data = Article::latest()->get();
+        $modifiedData = $data->map(function ($article) {
+            $article->image = url("storage/$article->image");
+            return $article;
+        });
         return ResponseController::create($data, 'success', 'Data retrieved successfully', 200);
     }
 
@@ -34,6 +38,7 @@ class UserArticleController extends Controller
     }
 
     public function show (Article $article) {
+        $article->image = url("storage/$article->image");
         return ResponseController::create($article, 'success', 'Data retrieved successfully', 200);
     }
 

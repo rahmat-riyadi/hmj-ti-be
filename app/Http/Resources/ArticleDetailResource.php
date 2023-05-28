@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Jenssegers\Date\Date;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Config;
 
 class ArticleDetailResource extends JsonResource
 {
@@ -21,7 +22,7 @@ class ArticleDetailResource extends JsonResource
             "slug" => $this->slug,
             "title" => $this->title,
             "description" => $this->description,
-            "image" => $this->image,
+            "image" => url("storage/$this->image"),
             "publish" => Date::parse($this->publish)->format('j-F-Y'),
         ];
     }

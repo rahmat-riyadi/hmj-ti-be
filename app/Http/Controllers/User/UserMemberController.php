@@ -14,6 +14,10 @@ class UserMemberController extends Controller
     public function index()
     {
         $data = Member::latest()->get();
+        $modifiedData = $data->map(function ($member) {
+            $member->photo = url("storage/$member->photo");
+            return $member;
+        });
         return ResponseController::create($data, 'success', "Data retrieved successfully", 200);
     }
 
@@ -48,6 +52,7 @@ class UserMemberController extends Controller
 
     public function show(Member $member)
     {
+        $member->photo = url("storage/$member->photo");
         return ResponseController::create($member, 'success', 'Data retrieved successfully', 200);
     }
 
