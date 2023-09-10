@@ -7,19 +7,18 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\API\ResponseController;
+use App\Http\Resources\BusinessResource;
 
 class UserBusinessController extends Controller
 {
-    public function index () {
+    public function index()
+    {
         $data = Business::latest()->get();
-        $modifiedData = $data->map(function ($business) {
-            $business->image = url("storage/$business->image");
-            return $business;
-        });
-        return ResponseController::create($data, 'success', 'Data retrieved successfully', 200);
+        return ResponseController::create(BusinessResource::collection($data), 'success', 'Data retrieved successfully', 200);
     }
 
-    public function store (Request $request) {
+    public function store(Request $request)
+    {
         $validated = $request->validate([
             "title" => "required",
             "description" => "required",
@@ -29,16 +28,21 @@ class UserBusinessController extends Controller
         ]);
 
         $validated["image"] = $request->file('image')->store('business');
-        Business::create($validated);
-        return ResponseController::create("", "Created", "successfully saved data", 201);
+        try {
+            $business = Business::create($validated);
+            return ResponseController::create(new BusinessResource($business), "Created", "successfully saved data", 201);
+        } catch (\Throwable $th) {
+            return ResponseController::create(["error" => $th->getMessage()], "Internal Server Error", "Terjadi kesalahan pada server", 500);
+        }
     }
 
-    public function show (Business $business) {
-        $business->image = url("storage/$business->image");
-        return ResponseController::create($business, "success", "Data retrieved successfully", 200);
+    public function show(Business $business)
+    {
+        return ResponseController::create(new BusinessResource($business), "success", "Data retrieved successfully", 200);
     }
 
-    public function update (Request $request, Business $business) {
+    public function update(Request $request, Business $business)
+    {
         $validated = $request->validate([
             "title" => "required",
             "description" => "required",
@@ -46,17 +50,32 @@ class UserBusinessController extends Controller
             "isActive" => "required|boolean",
             "image" => "nullable|image",
         ]);
-        if($request->file("image")){
-            Storage::delete($business->image);
+        if ($request->file("image")) {
+            if ($business->image && Storage::exists($business->image)) {
+                Storage::delete($business->image);
+            }
             $validated["image"] = $request->file('image')->store('business');
+        } else {
+            unset($validated["image"]);
         }
-        $business->update($validated);
-        return ResponseController::create("", "Success", "Data successfully updated", 200);
+        try {
+            $business->update($validated);
+            return ResponseController::create(new BusinessResource($business), "Success", "Data successfully updated", 200);
+        } catch (\Throwable $th) {
+            return ResponseController::create(["error" => $th->getMessage()], "Internal Server Error", "Terjadi kesalahan pada server", 500);
+        }
     }
-    
-    public function destroy (Business $business) {
-        Storage::delete($business->image);
-        $business->delete();
-        return ResponseController::create("", "Success", "Data successfully deleted", 200);
+
+    public function destroy(Business $business)
+    {
+        try {
+            if ($business->image && Storage::exists($business->image)) {
+                Storage::delete($business->image);
+            }
+            $business->delete();
+            return ResponseController::create("", "Success", "Data successfully deleted", 200);
+        } catch (\Throwable $th) {
+            return ResponseController::create(["error" => $th->getMessage()], "Internal Server Error", "Terjadi kesalahan pada server", 500);
+        }
     }
 }

@@ -2,11 +2,11 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Config;
 
-class BusinessResource extends JsonResource
+class UserArticleResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,11 +17,13 @@ class BusinessResource extends JsonResource
     {
         return [
             "id" => $this->id,
+            "slug" => $this-> slug,
             "title" => $this->title,
             "description" => $this->description,
-            "price" => $this->price,
-            "image" => url("storage/$this->image"),
+            "image" => url("storage/".$this->image),
+            "publish_date" => $this->publish_date,
             "isActive" => $this->isActive,
+            "isHeader" => $this->isHeader,
         ];
     }
 }

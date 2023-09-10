@@ -21,7 +21,8 @@ class Handler extends ExceptionHandler
         ], 401);
     }
 
-    public function invalidJson($request, ValidationException $exception){
+    public function invalidJson($request, ValidationException $exception)
+    {
         return response()->json([
             "code" => $exception->status,
             "status" => "Unprocessable Content",
@@ -66,14 +67,15 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
-        $this->renderable(function (NotFoundHttpException $e, $request)
-        {
-            return response()->json([
-                "code" => "404",
-                "status" => "Not Found",
-                "message" => "Not Found",
-                "errors" => "Not Found",
-            ]);
+        $this->renderable(function (NotFoundHttpException $e, $request) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    "code" => "404",
+                    "status" => "Not Found",
+                    "message" => "Not Found",
+                    "errors" => "Not Found",
+                ], 404);
+            }
         });
     }
 }

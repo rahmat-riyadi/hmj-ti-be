@@ -15,13 +15,11 @@ class ArticleResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $baseUrl = Config::get('app.url');
         return [
             "id" => $this->id,
             "slug" => $this->slug,
             "title" => $this->title,
             "description" => $this->description,
-            // "image" => "$baseUrl/storage/$this->image",
             "image" => url("storage/$this->image"),
         ];
     }
