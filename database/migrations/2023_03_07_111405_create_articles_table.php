@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->unique();
             $table->string('slug')->unique();
+            $table->string('title')->unique();
             $table->longText('description');
-            $table->boolean('isHeader');
             $table->string('image');
+            $table->date('publish_date');
             $table->boolean('isActive')->default(1);
-            $table->dateTime('publish');
+            $table->boolean('isHeader')->default(0);
             $table->timestamps();
         });
     }

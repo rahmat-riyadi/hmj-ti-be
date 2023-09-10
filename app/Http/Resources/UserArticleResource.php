@@ -3,12 +3,10 @@
 namespace App\Http\Resources;
 
 use Carbon\Carbon;
-use Jenssegers\Date\Date;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Config;
 
-class ArticleDetailResource extends JsonResource
+class UserArticleResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,11 +17,13 @@ class ArticleDetailResource extends JsonResource
     {
         return [
             "id" => $this->id,
-            "slug" => $this->slug,
+            "slug" => $this-> slug,
             "title" => $this->title,
             "description" => $this->description,
-            "image" => url("storage/$this->image"),
-            "publish_date" => Carbon::parse($this->publish)->isoFormat('DD-MMMM-Y'),
+            "image" => url("storage/".$this->image),
+            "publish_date" => $this->publish_date,
+            "isActive" => $this->isActive,
+            "isHeader" => $this->isHeader,
         ];
     }
 }
