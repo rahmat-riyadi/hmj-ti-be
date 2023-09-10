@@ -21,6 +21,7 @@ class BusinessResource extends JsonResource
             "description" => $this->description,
             "price" => $this->price,
             "image" => url("storage/$this->image"),
+            "isActive" => $this->isActive,
         ];
     }
 }
